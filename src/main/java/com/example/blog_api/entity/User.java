@@ -17,20 +17,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "username", nullable = true)
     private String username;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = true)
     private String password;
 
-    @Column(name = "role", nullable = false, columnDefinition = "varchar(20) default 'USER'")
+    @Column(name = "role", nullable = true)
     private Roles role;
 
     @CreationTimestamp
-    @Column(unique = false)
+    @Column(nullable = true)
     private Date create_at;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)

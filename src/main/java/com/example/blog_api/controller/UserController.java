@@ -1,10 +1,13 @@
 package com.example.blog_api.controller;
 
+import com.example.blog_api.dto.ChangePasswordDto;
 import com.example.blog_api.dto.UserDto;
 import com.example.blog_api.entity.Roles;
 import com.example.blog_api.service.UserService;
-import jakarta.websocket.server.PathParam;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -33,8 +36,7 @@ public class UserController {
     //get user by id
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long userId) {
-        UserDto resp = new UserDto(userId,"duy","duy", Roles.USER);
-        return ResponseEntity.ok(resp);
+        return ResponseEntity.ok(userService.getUserById(userId));
     }
     //update user yourself
     @PutMapping("/{id}")
@@ -42,4 +44,16 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('AMIN')")
+    public ResponseEntity<String> deleteUser(@PathVariable("id") Long userId) {
+        userService.deleteUser(userId);
+        return new ResponseEntity<>("User is deleted successfully", HttpStatus.OK);
+    }
+
+    @PutMapping("/changePassword")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDto changePasswordDto, Authentication authentication) {
+        userService.changePassword(changePasswordDto, authentication.getName());
+        return new ResponseEntity<>("Password is changed successfully", HttpStatus.OK);
+    }
 }
